@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read Book</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reader.css') }}">
+</head>
+<body>
+    {% if book %}
+        {% if book.book_pdf %}
+            <div class="reader-container">
+                <div class="pdf-viewer">
+                    <iframe src="{{ book.book_pdf }}" id="pdfFrame" onload="initializePDF()"></iframe>
+                </div>   
+            </div>
+        {% else %}
+            <h2 class="message">PDF not available for this book.</h2>
+        {% endif %}
+    {% else %}
+        <h2 class="message">Book not found.</h2>
+    {% endif %}
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script src="{{ url_for('static', filename='js/reader.js') }}"></script>
+</body>
+</html>

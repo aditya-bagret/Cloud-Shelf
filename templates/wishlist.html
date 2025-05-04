@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Wishlist - CloudShelf</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/wishlist.css') }}">
+</head>
+<body>
+  <header>
+    <h1>📚 My Wishlist</h1>
+  </header>
+
+  <div class="wishlist-container">
+    {% if wishlist_books %}
+      {% for book in wishlist_books %}
+        <div class="book-card">
+          <!-- Link to the book details page -->
+          <a href="{{ url_for('wishlist_view_bp.book_details_from_wishlist', book_id=book.id) }}">
+            <img src="{{ book.img_url }}" alt="{{ book.title }}">
+            <div class="book-info">
+              <h3>{{ book.title }}</h3>
+              <p><strong>Author:</strong> {{ book.author }}</p>
+              <p><strong>Year:</strong> {{ book.year }}</p>
+            </div>
+          </a>
+
+          <!-- Remove from wishlist button -->
+          <form method="POST" action="{{ url_for('wishlist_view_bp.remove_from_wishlist', book_id=book.id) }}">
+            <button type="submit" class="heart-btn liked" title="Remove from wishlist">❤️</button>
+          </form>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="empty-msg">Your wishlist is empty. Add some books!</p>
+    {% endif %}
+  </div>
+</body>
+</html>

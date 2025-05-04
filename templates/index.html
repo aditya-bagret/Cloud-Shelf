@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudShelf - Your Digital Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+    
+</head>
+<body>
+    <!-- Header / Navbar -->
+    <header>
+        <div class="container">
+            <!-- Logo -->
+            <div class="logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="CloudShelf Logo">
+                <span>CloudShelf</span>
+            </div>
+
+            <!-- Navigation -->
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li class="dropdown">
+                        <a href="#">Categories ▾</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Sci-Fi</a></li>
+                            <li><a href="#">Non-Fiction</a></li>
+                            <li><a href="#">Manga</a></li>
+                            <li><a href="#">Manhwa</a></li>
+                            <li><a href="#">Comics</a></li>
+                            <li><a href="#">Novels</a></li>
+                            <li><a href="#">Fantasy</a></li>
+                            <li><a href="#">History</a></li>
+                            <li><a href="#">Romance</a></li>
+                            <li><a href="#">Classic</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+
+            <!-- Language Selector -->
+            <div class="language-selector">
+                <select>
+                    <option>English</option>
+                    <option>Hindi</option>
+                    <option>Japanese</option>
+                    <option>Korean</option>
+                    <option>Chinese</option>
+                    <option>Spanish</option>
+                </select>
+            </div>
+
+          <!-- Auth Links -->
+            <!-- Auth Links -->
+            <div class="auth-links">
+                <a href="{{ url_for('login') }}" class="login-btn">Log In</a>
+                <a href="{{ url_for('register') }}" class="register-btn">Register</a>
+           </div>
+
+
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to <span class="highlight">CloudShelf</span></h1>
+            <p>Discover a world of books at your fingertips. Read, review, and explore unlimited stories.</p>
+
+            <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search for books..."  oninput="showSuggestions()">
+            <div id="suggestions-box" class="search-suggestions"></div> <!-- Suggestions appear here -->
+            <button onclick="searchBook()">Search</button>
+        </div>
+
+        </div>
+    </section>
+
+    <!-- Feature Section -->
+    <section class="features">
+        <h2>Welcome to CloudShelf</h2>
+        <div class="features-container">
+            <div class="feature">
+                <h3>Read Free Library Books Online</h3>
+                <p>Millions of books available through CloudShelf's digital lending.</p>
+            </div>
+            <div class="feature">
+                <h3>Set a Yearly Reading Goal</h3>
+                <p>Learn how to set a reading goal and track what you read.</p>
+            </div>
+            <div class="feature">
+                <h3>Keep Track of Your Favorite Books</h3>
+                <p>Organize your books using lists and the reading log.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trending Books Section -->
+    <section class="trending-books">
+        <h2>Trending Books</h2>
+        <div class="book-container">
+            <div class="book">
+                <img src="https://m.media-amazon.com/images/I/81YOuOGFCJL._AC_UF1000,1000_QL80_.jpg" alt="Book 1">
+                <h3>Harry Potter</h3>
+                <p><strong>Author:</strong> J.K. Rowling</p>
+                <p><strong>Published:</strong> 1997</p>
+            </div>
+            <div class="book">
+                <img src="https://m.media-amazon.com/images/I/71tbalAHYCL._AC_UF1000,1000_QL80_.jpg" alt="Book 2">
+                <h3>Ikigai</h3>
+                <p><strong>Author:</strong> Héctor García, Francesc Miralles</p>
+                <p><strong>Published:</strong> 2016</p>
+            </div>
+            <div class="book">
+                <img src="https://m.media-amazon.com/images/I/71aFt4+OTOL._AC_UF1000,1000_QL80_.jpg" alt="Book 3">
+                <h3>The Alchemist</h3>
+                <p><strong>Author:</strong> Paulo Coelho</p>
+                <p><strong>Published:</strong> 1988</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 CloudShelf. All rights reserved.</p>
+        <div class="contact-info">
+            <p>Email: anamikaraj2329@gmail.com</p>
+            <p>Location: Chennai, Tamil Nadu 603203</p>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ book.title }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/book_details1.css') }}">
+</head>
+<body>
+    <div class="book-detail-container">
+        <img src="{{ book.img_url }}" alt="{{ book.title }}">
+
+        <div class="book-detail-info">
+            <h1>{{ book.title }}</h1>
+            <p><strong>Author:</strong> {{ book.author }}</p>
+            <p><strong>Published Year:</strong> {{ book.year }}</p>
+            <p><strong>Status:</strong> {{ book.status }}</p>
+            {% if book.category_name %}
+                <p><strong>Category:</strong> {{ book.category_name }}</p>
+            {% endif %}
+            {% if book.categories %}
+                <p><strong>Categories:</strong> {{ book.categories }}</p>
+            {% endif %}
+            {% if book.description %}
+                <p><strong>Summary:</strong></p>
+                <p>{{ book.description }}</p>
+                {% endif %}
+
+            {% if session.get('user_id') %}
+                <!-- Wishlist Button with dynamic class based on wishlist status -->
+                <div class="wishlist-icon {% if in_wishlist %}added{% endif %}" 
+                     id="wishlist-heart" 
+                     data-book-id="{{ book.id }}">
+                     <i class="{% if in_wishlist %}fa-solid{% else %}fa-regular{% endif %} fa-heart"></i>
+                </div>
+            {% else %}
+                <button onclick="showWishlistLoginPrompt()">♥</button>
+            {% endif %}
+
+            <!-- Read Book Button (dynamic based on login status) -->
+            {% if session.get('user_id') %}
+                <a href="{{ url_for('book_details_bp.read_book', book_id=book.id) }}" class="read-button">📖 Read Book</a>
+            {% else %}
+                <a href="#" onclick="showReadBookLoginPrompt()" class="read-button">📖 Read Book</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <a href="{{ url_for('home') }}" class="back-button">⬅ Back to Home</a>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        function showWishlistLoginPrompt() {
+            alert("Please log in to use wishlist.");
+            window.location.href = "{{ url_for('login') }}";
+        }
+
+        function showReadBookLoginPrompt() {
+            alert("Please log in to read this book.");
+            window.location.href = "{{ url_for('login') }}";
+        }
+    </script>
+
+    <script src="{{ url_for('static', filename='js/wishlist.js') }}"></script>
+</body>
+</html>
