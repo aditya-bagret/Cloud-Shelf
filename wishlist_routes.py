@@ -25,7 +25,7 @@ def view_wishlist():
     cursor.close()
     conn.close()
 
-    return render_template("wishlist.html", wishlist_books=wishlist_books)
+    return render_template("dashboard/", wishlist_books=wishlist_books)
 
 
 @wishlist_view_bp.route('/remove_from_wishlist/<int:book_id>', methods=["POST"])

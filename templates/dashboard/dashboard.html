@@ -1,0 +1,41 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- Welcome Message -->
+<section class="section welcome-message" style="margin-bottom: 30px;">
+    <h1 style="font-size: 2.8rem; font-weight: 700; color: #2c3e50;">
+        Welcome back, {{ g.user.full_name }}!
+    </h1>
+    <p style="font-size: 1.2rem; color: #7f8c8d; margin-top: 5px;">
+        Dive into your digital library – continue where you left off or explore something new today!
+    </p>
+    <hr style="margin-top: 20px; border: 0; height: 2px; background: #ecf0f1;">
+</section>
+
+<!-- Continue Reading -->
+<section class="section continue-reading">
+    <h2 style="color: #34495e; font-size: 1.8rem; margin-bottom: 20px;">📖 Continue Reading</h2>
+    {% if continue_reading %}
+        <div class="book-list" style="display: flex; flex-wrap: wrap; gap: 20px;">
+            {% for book in continue_reading %}
+            <div class="highlight-book" style="background: #fff; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 15px; width: 280px;">
+                <img src="{{ url_for('static', filename=book.cover_image) }}" alt="Book Cover" class="book-cover" style="width: 100%; height: 200px; object-fit: cover; border-radius: 5px;">
+                <div class="book-detail" style="margin-top: 10px;">
+                    <h3 style="font-size: 1.2rem; color: #2c3e50;">{{ book.title }}</h3>
+                    <p style="color: #7f8c8d;">Page {{ book.page_read }} of {{ book.total_pages }}</p>
+                    <button class="btn" onclick="window.location.href='/read/{{ book.id }}'" style="margin-top: 10px; background-color: #3498db; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer;">
+                        Continue
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="color: #7f8c8d;">You have no books in progress. Start reading something new!</p>
+    {% endif %}
+</section>
+
+{% endblock %}

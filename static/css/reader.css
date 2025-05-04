@@ -1,15 +1,154 @@
-html, body {
+/* Reset default styles */
+* {
     margin: 0;
     padding: 0;
-    height: 100%;
-    overflow: hidden;
+    box-sizing: border-box;
 }
 
-iframe {
+body {
+    font-family: 'Roboto', 'Arial', sans-serif; /* Modern font with fallback */
+    background-color: #f0f2f5; /* Light gray background for a clean look */
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.reader-container {
+    width: 100%;
+    max-width: 900px; /* Slightly wider for better content display */
+    background-color: #ffffff;
+    border-radius: 15px; /* Softer corners */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
+    overflow: hidden;
+    transition: all 0.3s ease; /* Smooth transitions for interactivity */
+}
+
+.pdf-viewer {
+    position: relative;
+    width: 100%;
+    min-height: 650px; /* Adjusted for better page visibility */
+    background-color: #f9f9f9; /* Light background for the viewer */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.pdf-viewer iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 600px; /* Ensure enough space for the first page */
+    border: 1px solid #ddd; /* Subtle border for definition */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Light shadow for iframe */
+}
+
+/* Optional: Add a loading state */
+.pdf-viewer::before {
+    content: "Loading PDF...";
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    color: #7f8c8d;
+    font-size: 16px;
+    display: block;
+    text-align: center;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.pdf-viewer.loading::before {
+    opacity: 1;
+}
+
+.navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #2c3e50; /* Dark blue header */
+    color: #fff;
+    border-top: 1px solid #34495e; /* Subtle top border */
+}
+
+.navigation button {
+    background-color: #3498db; /* Bright blue buttons */
     border: none;
+    padding: 12px 25px; /* Larger padding for better touch targets */
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease; /* Smooth hover effects */
+}
+
+.navigation button:hover {
+    background-color: #2980b9; /* Darker blue on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+.navigation button:disabled {
+    background-color: #95a5a6; /* Grayed out for disabled state */
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.page-number {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ecf0f1; /* Light text for contrast */
+}
+
+.message {
+    text-align: center;
+    padding: 40px;
+    color: #e74c3c; /* Red for error messages */
+    font-size: 20px;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .reader-container {
+        max-width: 100%;
+        margin: 10px;
+    }
+
+    .pdf-viewer {
+        min-height: 450px; /* Reduced height for mobile */
+        padding: 10px 0;
+    }
+
+    .pdf-viewer iframe {
+        min-height: 400px;
+    }
+
+    .navigation {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .navigation button {
+        width: 100%;
+        padding: 10px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .pdf-viewer {
+        min-height: 350px;
+    }
+
+    .pdf-viewer iframe {
+        min-height: 300px;
+    }
+
+    .message {
+        padding: 20px;
+        font-size: 18px;
+    }
 }

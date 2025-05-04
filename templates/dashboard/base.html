@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}CloudShelf Dashboard{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    {% block styles %}
+    {% endblock %}
+</head>
+<body>
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="CloudShelf Logo">
+            <span>CloudShelf</span>
+        </div>
+        <nav>
+            <ul>
+                <li>
+                    <a href="{{ url_for('dashboard.dashboard') }}" class="{% if active_page == 'dashboard' %}active{% endif %}">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('dashboard.wishlist') }}" class="{% if active_page == 'wishlist' %}active{% endif %}">
+                        <i class="fas fa-bookmark"></i> Wishlist
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('dashboard.recommendations') }}" class="{% if active_page == 'recommendations' %}active{% endif %}">
+                        <i class="fas fa-star"></i> Recommendations
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('dashboard.reviews') }}" class="{% if active_page == 'reviews' %}active{% endif %}">
+                        <i class="fas fa-pen"></i> Reviews
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="dashboard-header">
+            <form action="{{ url_for('search.search_results') }}" method="GET" class="search-form" autocomplete="off">
+                <input type="text" name="q" id="searchInput" placeholder="Search books, authors...">
+                <div id="suggestions" class="suggestions-box"></div>
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+
+            {% if g.user %}
+            <div class="user-info">
+                <span class="dropdown-toggle" id="userDropdownToggle">
+                    <i class="fas fa-user"></i> My Profile <i class="fas fa-caret-down"></i>
+                </span>
+
+                <div class="user-dropdown" id="userDropdown" style="display: none; position: absolute; top: 100%; right: 0; background-color: #fff; border: 1px solid #ccc; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); padding: 15px; z-index: 10; border-radius: 5px; min-width: 200px; text-align: left;">
+                    <p style="margin-bottom: 5px;"><strong>Name</strong> - {{ g.user.full_name }}</p>
+                    <p style="margin-bottom: 10px;"><strong>Email ID</strong> - {{ g.user.email }}</p>
+                    <a href="{{ url_for('dashboard.logout') }}" class="logout-button" style="display: block; color: #dc3545; text-decoration: none; padding: 8px 0; border-top: 1px solid #eee;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </header>
+
+        <section class="content">
+            {% block content %}{% endblock %}
+        </section>
+
+    </main>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Toggle user dropdown
+        const toggle = document.getElementById("userDropdownToggle");
+        const dropdown = document.getElementById("userDropdown");
+        if (toggle && dropdown) {
+            toggle.addEventListener("click", function (e) {
+                e.stopPropagation();
+                dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+            });
+            document.addEventListener("click", function () {
+                dropdown.style.display = "none";
+            });
+        }
+
+        // Live search suggestions
+        const input = document.getElementById("searchInput");
+        const suggestionsBox = document.getElementById("suggestions");
+
+        input.addEventListener("input", async function () {
+            const query = input.value.trim();
+            if (query.length < 2) {
+                suggestionsBox.innerHTML = "";
+                return;
+            }
+
+            const response = await fetch(`/search_suggestions?q=${encodeURIComponent(query)}`);
+            const suggestions = await response.json();
+
+            suggestionsBox.innerHTML = "";
+            suggestions.forEach(book => {
+                const item = document.createElement("div");
+                item.classList.add("suggestion-item");
+                item.textContent = book.title;
+                item.addEventListener("click", () => {
+                    input.value = book.title;
+                    suggestionsBox.innerHTML = "";
+                });
+                suggestionsBox.appendChild(item);
+            });
+        });
+
+        document.addEventListener("click", function (e) {
+            if (!suggestionsBox.contains(e.target) && e.target !== input) {
+                suggestionsBox.innerHTML = "";
+            }
+        });
+    });
+</script>
+
+{% block scripts %}{% endblock %}
+
+</body>
+</html>
