@@ -5,12 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ book.title }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/book_details1.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/book_details.css') }}">
+    <style>
+        .review-section {
+            margin-top: 20px;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+        }
+        .review {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .review p {
+            margin: 5px 0;
+        }
+        .write-review-section {
+            margin-top: 20px;
+        }
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        .login-prompt {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .login-prompt:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <div class="book-detail-container">
         <img src="{{ book.img_url }}" alt="{{ book.title }}">
-
         <div class="book-detail-info">
             <h1>{{ book.title }}</h1>
             <p><strong>Author:</strong> {{ book.author }}</p>
@@ -25,26 +62,44 @@
             {% if book.description %}
                 <p><strong>Summary:</strong></p>
                 <p>{{ book.description }}</p>
-                {% endif %}
-
+            {% endif %}
+            
             {% if session.get('user_id') %}
-                <!-- Wishlist Button with dynamic class based on wishlist status -->
                 <div class="wishlist-icon {% if in_wishlist %}added{% endif %}" 
                      id="wishlist-heart" 
                      data-book-id="{{ book.id }}">
-                     <i class="{% if in_wishlist %}fa-solid{% else %}fa-regular{% endif %} fa-heart"></i>
+                    <i class="{% if in_wishlist %}fa-solid{% else %}fa-regular{% endif %} fa-heart"></i>
                 </div>
             {% else %}
                 <button onclick="showWishlistLoginPrompt()">♥</button>
             {% endif %}
 
-            <!-- Read Book Button (dynamic based on login status) -->
             {% if session.get('user_id') %}
                 <a href="{{ url_for('book_details_bp.read_book', book_id=book.id) }}" class="read-button">📖 Read Book</a>
             {% else %}
                 <a href="#" onclick="showReadBookLoginPrompt()" class="read-button">📖 Read Book</a>
             {% endif %}
+
+            <div class="write-review-section">
+                {% if session.get('user_id') %}
+                    <p><a href="{{ url_for('dashboard.write_review', book_id=book.id) }}" class="btn btn-success">Write a Review</a></p>
+                {% else %}
+                    <p><a href="{{ url_for('login') }}" class="login-prompt">Log in</a> to write a review.</p>
+                {% endif %}
+            </div>
         </div>
+    </div>
+
+    <div class="review-section">
+        {% if reviews %}
+            {% for review in reviews %}
+                <div class="review">
+                    <p><strong>{{ review.full_name }}</strong> {% if review.rating %} - Rating: {{ review.rating }} Stars{% endif %}</p>
+                    <p>{{ review.review_text }}</p>
+                    <hr>
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
 
     <a href="{{ url_for('home') }}" class="back-button">⬅ Back to Home</a>
@@ -62,7 +117,6 @@
             window.location.href = "{{ url_for('login') }}";
         }
     </script>
-
     <script src="{{ url_for('static', filename='js/wishlist.js') }}"></script>
 </body>
 </html>

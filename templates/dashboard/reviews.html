@@ -1,0 +1,172 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}My Reviews{% endblock %}
+
+{% block content %}
+    <h2>My Reviews</h2>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% if reviews %}
+        <ul class="review-list">
+            {% for review in reviews %}
+                <li id="review-{{ review.id }}">
+                    <h3>{{ review.book_title }} by {{ review.book_author }}</h3>
+                    <p><strong>Your Review:</strong> {{ review.review_text }}</p>
+                    {% if review.rating %}
+                        <p><strong>Rating:</strong> {{ review.rating }} Stars</p>
+                    {% endif %}
+                    <p class="review-meta">
+                        Written on {{ review.created_at.strftime('%Y-%m-%d %H:%M:%S') }}
+                        <button class="btn btn-sm btn-danger delete-review-btn" data-review-id="{{ review.id }}">Delete</button>
+                    </p>
+                    <hr>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You haven't written any reviews yet.</p>
+    {% endif %}
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const deleteButtons = document.querySelectorAll('.delete-review-btn');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const reviewId = event.target.dataset.reviewId;
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch(`/review/${reviewId}/delete`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                // Add CSRF token if required (uncomment if using Flask-WTF)
+                                // 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify({})
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.json().then(data => {
+                                    throw new Error(data.message || 'Failed to delete review');
+                                });
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            Swal.fire(
+                                'Deleted!',
+                                data.message,
+                                'success'
+                            ).then(() => {
+                                // Option 1: Remove review from DOM
+                                const reviewElement = document.getElementById(`review-${reviewId}`);
+                                if (reviewElement) {
+                                    reviewElement.remove();
+                                }
+                                // Option 2: Refresh page to ensure latest reviews (uncomment if preferred)
+                                // window.location.reload();
+                            });
+                        })
+                        .catch(error => {
+                            Swal.fire(
+                                'Error!',
+                                error.message,
+                                'error'
+                            );
+                        });
+                    }
+                });
+            });
+        });
+    });
+    </script>
+{% endblock %}
+
+{% block styles %}
+    <style>
+        .review-list {
+            list-style: none;
+            padding: 0;
+        }
+        .review-list li {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+        }
+        .review-meta {
+            font-size: 0.9em;
+            color: #777;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.8em;
+        }
+        .delete-review-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: background-color 0.3s ease;
+            margin-left: 10px;
+        }
+        .delete-review-btn:hover {
+            background-color: #c82333;
+        }
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        .alert {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+    </style>
+{% endblock %}

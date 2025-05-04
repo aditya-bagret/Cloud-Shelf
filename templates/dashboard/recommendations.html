@@ -1,0 +1,116 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+<div class="recommendations-container">
+    <h1>Book Recommendations For You</h1>
+    {% if recommended_books %}
+    <div class="book-grid">
+        {% for book in recommended_books %}
+        <div class="book-card">
+            {% if book.img_url %}
+            <img src="{{ book.img_url }}" alt="{{ book.title }} Cover" class="book-cover">
+            {% else %}
+            <div class="book-cover placeholder">No Cover</div>
+            {% endif %}
+            <div class="book-info">
+                <h3>{{ book.title }}</h3>
+                {% if book.author %}
+                <p class="author">By {{ book.author }}</p>
+                {% endif %}
+                <a href="/book/{{ book.id }}" class="view-details">View Details</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>No book recommendations available at the moment.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<style>
+    .recommendations-container {
+        padding: 20px;
+    }
+
+    .book-grid {
+        list-style: none;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 15px;
+    }
+
+    .book-card {
+        text-align: center;
+        padding: 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        background-color: #f9f9f9;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .book-cover {
+        width: 80%;
+        height: auto;
+        border-radius: 4px;
+        aspect-ratio: 2 / 3;
+        object-fit: cover;
+        margin-bottom: 10px;
+    }
+
+    .book-cover.placeholder {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 120px;
+        background-color: #ddd;
+        color: #777;
+        border-radius: 4px;
+        margin-bottom: 10px;
+        font-size: 0.9em;
+        font-style: italic;
+    }
+
+    .book-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .book-info h3 {
+        font-size: 1.1em;
+        margin-top: 0;
+        margin-bottom: 5px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .book-info .author {
+        color: #777;
+        font-size: 0.9em;
+        margin-bottom: 10px;
+    }
+
+    .book-info .view-details {
+        display: inline-block;
+        padding: 6px 12px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 0.9em;
+        transition: background-color 0.3s ease;
+    }
+
+    .book-info .view-details:hover {
+        background-color: #0056b3;
+    }
+</style>
+{% endblock %}
